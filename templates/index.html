@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Broker Joe's D&O Underwriting Quick Check</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.js"
+      integrity="sha384-oeUn82QNXPuVkGCkcrInrS1twIxKhkZiFfr2TdiuObZ3n3yIeMiqcRzkIcguaof1"
+      crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  </head>
+  <body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div class="container mx-auto max-w-5xl px-4 py-12">
+      <div class="relative mb-16">
+        
+
+        <div class="relative">
+          <div class="inline-block">
+            <h1
+              class="text-2xl">
+              Broker Joe's D&O Underwriting Quick Check
+            </h1>
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+        <form
+          id="swot-form"
+          hx-post="/analyze"
+          hx-trigger="submit"
+          hx-target="#status"
+          class="flex flex-col sm:flex-row gap-3">
+          <div class="flex-grow">
+            <input
+              type="url"
+              name="url"
+              value="https://hendricks-makler.de"
+              required
+              class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 placeholder-gray-400" />
+          </div>
+          <button
+            type="submit"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-md"
+            hx-on:click="
+              const [status, result] = ['#status', '#result'].map(id => document.querySelector(id));
+              status.style.display = 'block';
+              result.style.display = 'none';">
+            <span class="flex items-center justify-center gap-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+              </svg>
+              Start Analyse
+            </span>
+          </button>
+        </form>
+      </div>
+
+      <div id="analysis-content">
+        <div
+          id="status"
+          hx-get="/status"
+          hx-trigger="load, every 1s"
+          hx-swap="innerHTML transition:false"
+          style="display: none"
+          class="bg-white rounded-2xl shadow-lg p-6 mb-8"></div>
+        <div
+          id="result"
+          hx-get="/result"
+          hx-trigger="load, every 1s[!this.querySelector('#result-container') || this.style.display === 'none']"
+          hx-swap="innerHTML"
+          hx-on::after-request="
+          if(this.innerHTML.trim().length > 0) {
+            const statusDiv = document.querySelector('#status');
+            if (statusDiv) statusDiv.style.display = 'none';
+            this.style.display = 'block';
+          }"></div>
+      </div>
+    </div>
+  </body>
+</html>
